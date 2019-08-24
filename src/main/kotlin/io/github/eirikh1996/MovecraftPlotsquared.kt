@@ -1,10 +1,8 @@
 package io.github.eirikh1996
 
-import com.github.intellectualsites.plotsquared.api.PlotAPI
-import com.github.intellectualsites.plotsquared.plot.IPlotMain
-import com.github.intellectualsites.plotsquared.plot.`object`.Location
-import com.github.intellectualsites.plotsquared.plot.`object`.Plot
-import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag
+import com.intellectualcrafters.plot.IPlotMain
+import com.intellectualcrafters.plot.`object`.Location
+import com.intellectualcrafters.plot.`object`.Plot
 import net.countercraft.movecraft.Movecraft
 import net.countercraft.movecraft.MovecraftLocation
 import net.countercraft.movecraft.craft.Craft
@@ -27,7 +25,6 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
     override fun onEnable() {
         saveDefaultConfig()
         Settings.Locale = config.getString("Locale")!!
-        val craftMoveFlag = BooleanFlag("craftMovement")
         val locales = arrayOf("en", "de", "nl", "no")
         for (locale in locales){
             val locFile = "mpslang_" + locale + ".properties"
@@ -40,15 +37,18 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (tempMovecraftPlugin is Movecraft && tempMovecraftPlugin.isEnabled){
             movecraftPlugin = tempMovecraftPlugin
         }
-        val tempPSplugin : Plugin = server.pluginManager.getPlugin("PlotSquared")!!
-        if (tempPSplugin is IPlotMain && tempPSplugin.isEnabled){
-            plotSquaredPlugin = tempPSplugin
+        val PSplugin : Plugin? = server.pluginManager.getPlugin("PlotSquared")!!
+        if (PSplugin is IPlotMain && PSplugin.isEnabled){
+            plotSquaredPlugin = PSplugin
         }
-        if (movecraftPlugin == null || plotSquaredPlugin == null){
+        if (movecraftPlugin == null){
+            logger.severe(I18n.getInternationalisedString("Startup - Movecraft Not Found or disabled"))
             server.pluginManager.disablePlugin(this)
         }
-        plotApi = PlotAPI()
-        plotApi.addFlag(craftMoveFlag)
+        if (plotSquaredPlugin == null){
+            logger.severe(I18n.getInternationalisedString("Startup - PlotSquared Not Found or disabled"))
+            server.pluginManager.disablePlugin(this)
+        }
         server.pluginManager.registerEvents(this, this)
 
     }
@@ -114,7 +114,6 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
     }
 
     companion object {
-        lateinit var plotApi : PlotAPI
         private var movecraftPlugin : Movecraft? = null
         private var plotSquaredPlugin : IPlotMain? = null
         @JvmStatic lateinit var instance : MovecraftPlotsquared

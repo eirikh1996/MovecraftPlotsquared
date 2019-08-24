@@ -23,22 +23,18 @@
     </repository>
     <repository>
         <id>p2-repo</id>
-        <url>http://ci.athion.net/job/PlotSquared-Breaking/ws/mvn/</url>
-    </repository>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+        <url>http://ci.athion.net/job/PlotSquared-Legacy/ws/mvn/</url>
     </repository>
 </repositories>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.14.2-R0.1-SNAPSHOT</version>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.github.intellectualsites.plotsquared</groupId>
-            <artifactId>PlotSquared-API</artifactId>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>plotsquared-api</artifactId>
             <version>latest</version>
         </dependency>
         <dependency>
