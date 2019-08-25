@@ -14,6 +14,8 @@ import net.countercraft.movecraft.utils.HitBox
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.server.PluginDisableEvent
+import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.yaml.snakeyaml.Yaml
@@ -44,11 +46,19 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (tempPSplugin is IPlotMain && tempPSplugin.isEnabled){
             plotSquaredPlugin = tempPSplugin
         }
-        if (movecraftPlugin == null || plotSquaredPlugin == null){
+        if (movecraftPlugin == null){
+            logger.severe(I18n.getInternationalisedString("Startup - Movecraft Not Found or disabled"))
+            server.pluginManager.disablePlugin(this)
+        }
+        if (plotSquaredPlugin == null){
+            logger.severe(I18n.getInternationalisedString("Startup - PlotSquared Not Found or disabled"))
             server.pluginManager.disablePlugin(this)
         }
         plotApi = PlotAPI()
         plotApi.addFlag(craftMoveFlag)
+
+        Settings.AllowMovementOutsidePlots = config.getBoolean("AllowMovementOutsidePlots", false)
+        Settings.AllowCruiseOnPilotCraftsToExitPlots = config.getBoolean("AllowCruiseOnPilotCraftsToExitPlots", false)
         server.pluginManager.registerEvents(this, this)
 
     }
@@ -75,26 +85,35 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         event.isCancelled = true
     }
 
+    @EventHandler
+    fun onPluginDisable(event: PluginDisableEvent){
+        if (event.plugin !is IPlotMain && event.plugin !is Movecraft){
+            return
+        }
+        server.pluginManager.disablePlugin(this)
+    }
+
+    @EventHandler
+    fun onPluginEnable(event: PluginEnableEvent){
+        if (event.plugin !is IPlotMain && event.plugin !is Movecraft){
+            return
+        }
+        server.pluginManager.enablePlugin(this)
+    }
+
     private fun allowedToMove(craft : Craft,oldHitBox: HitBox, newHitBox: HitBox) : Boolean{
         if (craft.sinking){
             return true
         }
-        var plot : Plot? = null
-        var location : Location? = null
+        var plot : Plot? = Utils.movecraft2PSLocation(craft.w, craft.hitBox.midPoint).plot
         for (ml : MovecraftLocation in newHitBox){
-            if (oldHitBox.contains(ml)){
+            val pLoc = Utils.movecraft2PSLocation(craft.w, ml)
+            if (pLoc.plot != null){
                 continue
             }
-            val pLoc = Utils.movecraft2PSLocation(craft.w, ml)
-            if (pLoc.plot != null || pLoc.isPlotRoad){
-                location = pLoc
-                break
-            }
+            plot = null
+            break
         }
-        if (location == null){
-            return false
-        }
-
         val psWorldsFile = server.pluginManager.getPlugin("PlotSquared")!!.dataFolder.absolutePath + "/config/worlds.yml"
         val input = FileInputStream(psWorldsFile)
         val yaml = Yaml()
@@ -104,10 +123,16 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (!worlds.containsKey(craft.w.name)){
             return true
         }
+        if (craft.notificationPlayer != null || craft.notificationPlayer!!.hasPermission("mps.move.bypassrestrictions")){
+            return true
+        }
         if (plot == null){
+            if (craft.type.cruiseOnPilot && !Settings.AllowCruiseOnPilotCraftsToExitPlots){
+                craft.sink()
+            }
             return false
         }
-        if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId) || location.isPlotRoad){
+        if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){
             return false
         }
         return true
