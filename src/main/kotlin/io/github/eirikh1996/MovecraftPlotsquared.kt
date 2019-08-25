@@ -123,7 +123,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (!worlds.containsKey(craft.w.name)){
             return true
         }
-        if (craft.notificationPlayer != null || craft.notificationPlayer!!.hasPermission("mps.move.bypassrestrictions")){
+        if (craft.notificationPlayer != null && craft.notificationPlayer!!.hasPermission("mps.move.bypassrestrictions")){
             return true
         }
         if (plot == null){
