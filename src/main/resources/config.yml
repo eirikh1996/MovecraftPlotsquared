@@ -1,1 +1,3 @@
 Locale: en
+AllowMovementOutsidePlots: false
+AllowCruiseOnPilotCraftsToExitPlots: false
