@@ -107,6 +107,9 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         }
         var plot : Plot? = Utils.movecraft2PSLocation(craft.w, craft.hitBox.midPoint).plot
         for (ml : MovecraftLocation in newHitBox){
+            if (oldHitBox.contains(ml)){
+                continue
+            }
             val pLoc = Utils.movecraft2PSLocation(craft.w, ml)
             if (pLoc.plot != null){
                 continue
