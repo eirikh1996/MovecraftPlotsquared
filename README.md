@@ -13,6 +13,6 @@ NOTE: Older versions of Movecraft are not supported
 3. run the server
 
 # Current features
-- Prevents craft movement outside plots in plotworlds (can be bypassed with permission node ´´´mps.move.bypassrestrictions´´´ 
+- Prevents craft movement outside plots in plotworlds (can be bypassed with permission node *mps.move.bypassrestrictions* 
 
 # Planned features
