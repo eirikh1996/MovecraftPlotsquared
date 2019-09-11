@@ -1,6 +1,6 @@
 package io.github.eirikh1996
 
-import com.github.intellectualsites.plotsquared.plot.`object`.Location
+import com.intellectualcrafters.plot.`object`.Location
 import net.countercraft.movecraft.MovecraftLocation
 import org.bukkit.World
 

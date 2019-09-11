@@ -35,21 +35,23 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
             }
         }
         I18n.initialize()
-        val tempMovecraftPlugin : Plugin = server.pluginManager.getPlugin("Movecraft")!!
+        val tempMovecraftPlugin : Plugin? = server.pluginManager.getPlugin("Movecraft")
         if (tempMovecraftPlugin is Movecraft && tempMovecraftPlugin.isEnabled){
             movecraftPlugin = tempMovecraftPlugin
         }
-        val PSplugin : Plugin? = server.pluginManager.getPlugin("PlotSquared")!!
+        val PSplugin : Plugin? = server.pluginManager.getPlugin("PlotSquared")
         if (PSplugin is IPlotMain && PSplugin.isEnabled){
             plotSquaredPlugin = PSplugin
         }
         if (movecraftPlugin == null){
             logger.severe(I18n.getInternationalisedString("Startup - Movecraft Not Found or disabled"))
             server.pluginManager.disablePlugin(this)
+            return
         }
         if (plotSquaredPlugin == null){
             logger.severe(I18n.getInternationalisedString("Startup - PlotSquared Not Found or disabled"))
             server.pluginManager.disablePlugin(this)
+            return
         }
         server.pluginManager.registerEvents(this, this)
 
@@ -77,21 +79,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         event.isCancelled = true
     }
 
-    @EventHandler
-    fun onPluginDisable(event: PluginDisableEvent){
-        if (event.plugin !is IPlotMain && event.plugin !is Movecraft){
-            return
-        }
-        server.pluginManager.disablePlugin(this)
-    }
 
-    @EventHandler
-    fun onPluginEnable(event: PluginEnableEvent){
-        if (event.plugin !is IPlotMain && event.plugin !is Movecraft){
-            return
-        }
-        server.pluginManager.enablePlugin(this)
-    }
 
     private fun allowedToMove(craft : Craft,oldHitBox: HitBox, newHitBox: HitBox) : Boolean{
         if (craft.sinking){
