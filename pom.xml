@@ -4,17 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.eirikh1996</groupId>
-    <artifactId>Movecraft-Plotsquared-Parent</artifactId>
+    <artifactId>movecraft-plotsquared-parent</artifactId>
     <version>Parent</version>
+    <name>Movecraft-Plotsquared-Parent</name>
+    <packaging>pom</packaging>
     <modules>
         <module>modules/api</module>
         <module>modules/Movecraft-Plotsquared-legacy</module>
         <module>modules/Movecraft-Plotsquared-1_13+</module>
         <module>modules/Movecraft-Plotsquared</module>
     </modules>
-    <packaging>pom</packaging>
 
-    <name>io.github.eirikh1996 Movecraft-Plotsquared</name>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

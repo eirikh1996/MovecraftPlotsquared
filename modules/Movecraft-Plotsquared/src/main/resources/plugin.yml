@@ -1,8 +1,8 @@
 name: Movecraft-PlotSquared
 main: io.github.eirikh1996.MovecraftPlotsquared
-version: 1.0
+version: ${project.version}
 api-version: 1.13
 author: eirikh1996
-softdepend:
+depend:
   - Movecraft
   - PlotSquared

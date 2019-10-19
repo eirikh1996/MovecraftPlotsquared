@@ -3,14 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>Movecraft-Plotsquared-Parent</artifactId>
+        <artifactId>movecraft-plotsquared-parent</artifactId>
         <groupId>io.github.eirikh1996</groupId>
         <version>Parent</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Movecraft-Plotsquared-1_13</artifactId>
+    <artifactId>movecraft-plotsquared-1_13</artifactId>
+    <name>Movecraft-PlotSquared-1_13</name>
     <version>1_13</version>
     <repositories>
         <repository>
@@ -29,6 +30,13 @@
             <groupId>com.github.intellectualsites.plotsquared</groupId>
             <artifactId>PlotSquared-API</artifactId>
             <version>latest</version>
+        </dependency>
+        <dependency>
+            <groupId>net.countercraft</groupId>
+            <artifactId>movecraft</artifactId>
+            <version>7.0.0_pre_release_5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../libs/Movecraft.jar</systemPath>
         </dependency>
     </dependencies>
 

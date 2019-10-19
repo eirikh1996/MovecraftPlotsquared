@@ -9,6 +9,7 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 class MovecraftPlotsquared : JavaPlugin(), Listener {
 
@@ -24,8 +25,8 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         } else {
             compat = "v1_13"
         }
-        val psHandler = Class.forName("io.github.eirikh1996.compat" + compat + ".IPlotSquaredHandler").kotlin
-        if (psHandler is PlotSquaredHandler){
+        val psHandler = Class.forName("io.github.eirikh1996.compat." + compat + ".IPlotSquaredHandler").kotlin
+        if (psHandler.isSubclassOf(PlotSquaredHandler::class)){
             plotSquaredHandler = psHandler.constructors.first().call(this) as PlotSquaredHandler
         }
 
