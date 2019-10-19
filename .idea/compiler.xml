@@ -6,12 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Movecraft-Plotsquared-legacy" />
         <module name="api" />
-        <module name="MovecraftPlotsquared" />
         <module name="MovecraftPlotSquared" />
         <module name="Movecraft-Plotsquared-1_13+" />
-        <module name="Movecraft-Plotsquared-legacy" />
+        <module name="Movecraft-Plotsquared-API" />
+        <module name="MovecraftPlotsquared" />
+        <module name="Movecraft-PlotSquared" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

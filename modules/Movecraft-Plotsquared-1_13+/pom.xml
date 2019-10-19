@@ -10,7 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Movecraft-Plotsquared-1_13+</artifactId>
+    <artifactId>Movecraft-Plotsquared-1_13</artifactId>
+    <version>1_13</version>
     <repositories>
         <repository>
             <id>p2-repo</id>

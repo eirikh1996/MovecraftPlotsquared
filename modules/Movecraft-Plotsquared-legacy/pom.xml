@@ -13,6 +13,13 @@
     <artifactId>Movecraft-Plotsquared-legacy</artifactId>
     <dependencies>
         <dependency>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>plotsquared-api</artifactId>
+            <version>latest</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../libs/PlotSquared-Bukkit-19.09.07-f27e556-781.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>io.github.eirikh1996</groupId>
             <artifactId>Movecraft-Plotsquared-API</artifactId>
             <version>API</version>

@@ -24,9 +24,9 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         } else {
             compat = "v1_13"
         }
-        val psHandler = Class.forName("io.github.eirikh1996.compat" + compat + ".IPlotSquaredHandler")
-        if (PlotSquaredHandler::class.java.isAssignableFrom(psHandler)){
-            plotSquaredHandler = psHandler.getConstructor(Plugin::class.java).newInstance(this) as PlotSquaredHandler
+        val psHandler = Class.forName("io.github.eirikh1996.compat" + compat + ".IPlotSquaredHandler").kotlin
+        if (psHandler is PlotSquaredHandler){
+            plotSquaredHandler = psHandler.constructors.first().call(this) as PlotSquaredHandler
         }
 
         saveDefaultConfig()

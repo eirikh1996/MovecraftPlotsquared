@@ -1,10 +1,10 @@
-package io.github.eirikh1996.compat.v1_13
+package io.github.eirikh1996.compat.legacy
 
-import com.github.intellectualsites.plotsquared.api.PlotAPI
-import com.github.intellectualsites.plotsquared.plot.IPlotMain
-import com.github.intellectualsites.plotsquared.plot.`object`.Location
-import com.github.intellectualsites.plotsquared.plot.`object`.Plot
-import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag
+import com.intellectualcrafters.plot.IPlotMain
+import com.intellectualcrafters.plot.`object`.Location
+import com.intellectualcrafters.plot.`object`.Plot
+import com.intellectualcrafters.plot.api.PlotAPI
+import com.intellectualcrafters.plot.flag.BooleanFlag
 import io.github.eirikh1996.PlotSquaredHandler
 import io.github.eirikh1996.Settings
 import net.countercraft.movecraft.MovecraftLocation
@@ -51,7 +51,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin): PlotSquaredHandler {
         val psWorldsFile = plugin.server.pluginManager.getPlugin("PlotSquared")!!.dataFolder.absolutePath + "/config/worlds.yml"
         val input = FileInputStream(psWorldsFile)
         val yaml = Yaml()
-        val data : Map<String, Any> = yaml.load<Map<String, Any>>(input)
+        val data = yaml.load(input) as Map<String, Any>
         val worlds : Map<String, Any> = data.get("worlds") as Map<String, Any>
 
         if (!worlds.containsKey(craft.w.name)){
@@ -77,3 +77,4 @@ class IPlotSquaredHandler constructor(val plugin: Plugin): PlotSquaredHandler {
         }
     }
 }
+
