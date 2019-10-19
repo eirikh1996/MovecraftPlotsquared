@@ -17,8 +17,9 @@ import java.io.FileInputStream
 
 class IPlotSquaredHandler constructor(val plugin: Plugin): PlotSquaredHandler {
     val plotApi = PlotAPI()
+    private val craftFlag = BooleanFlag("craftMovement")
     override fun registerPSFlags() {
-        val craftFlag = BooleanFlag("craftMovement")
+
         plotApi.addFlag(craftFlag)
     }
 
@@ -67,6 +68,9 @@ class IPlotSquaredHandler constructor(val plugin: Plugin): PlotSquaredHandler {
             return false
         }
         if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){
+            if (plot.hasFlag(craftFlag)){
+                return plot.getFlag(craftFlag, false)
+            }
             return false
         }
         return true
