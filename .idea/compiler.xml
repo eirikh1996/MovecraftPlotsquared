@@ -6,7 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="api" />
         <module name="MovecraftPlotsquared" />
+        <module name="MovecraftPlotSquared" />
+        <module name="Movecraft-Plotsquared-1_13+" />
+        <module name="Movecraft-Plotsquared-legacy" />
       </profile>
     </annotationProcessing>
   </component>

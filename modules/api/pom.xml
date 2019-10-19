@@ -1,57 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>Movecraft-Plotsquared-Parent</artifactId>
+        <groupId>io.github.eirikh1996</groupId>
+        <version>Parent</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.eirikh1996</groupId>
-    <artifactId>Movecraft-Plotsquared-Parent</artifactId>
-    <version>Parent</version>
-    <modules>
-        <module>modules/api</module>
-        <module>modules/Movecraft-Plotsquared-legacy</module>
-        <module>modules/Movecraft-Plotsquared-1_13+</module>
-        <module>modules/Movecraft-Plotsquared</module>
-    </modules>
-    <packaging>pom</packaging>
+    <artifactId>Movecraft-Plotsquared-API</artifactId>
+    <packaging>jar</packaging>
 
-    <name>io.github.eirikh1996 Movecraft-Plotsquared</name>
+    <name>Movecraft-Plotsquared-API</name>
+    <version>API</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.3.41</kotlin.version>
+        <kotlin.version>1.3.50</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
         <junit.version>4.12</junit.version>
     </properties>
-<repositories>
-    <repository>
-        <id>spigot-repo</id>
-        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
 
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
     <dependencies>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.14.2-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Sauilitired</groupId>
-            <artifactId>Jenkins4J</artifactId>
-            <version>3.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.countercraft</groupId>
-            <artifactId>movecraft</artifactId>
-            <version>7.0.0_pre_release_5</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/Movecraft.jar</systemPath>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
@@ -69,12 +41,19 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.countercraft</groupId>
+            <artifactId>movecraft</artifactId>
+            <version>7.0.0_pre_release_5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../libs/Movecraft.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
-        <finalName>Movecraft-PlotSquared</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>

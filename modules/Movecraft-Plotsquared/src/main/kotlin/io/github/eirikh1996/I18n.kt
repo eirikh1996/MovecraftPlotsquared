@@ -2,7 +2,6 @@ package io.github.eirikh1996
 
 import org.bukkit.entity.Player
 import java.io.*
-import java.lang.Exception
 import java.util.*
 
 class I18n {
