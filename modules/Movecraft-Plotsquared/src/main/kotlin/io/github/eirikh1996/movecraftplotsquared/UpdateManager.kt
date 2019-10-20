@@ -1,5 +1,8 @@
 package io.github.eirikh1996.movecraftplotsquared
 
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import org.bukkit.permissions.Permission
 import org.bukkit.scheduler.BukkitRunnable
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
@@ -9,11 +12,15 @@ import java.io.InputStreamReader
 import java.net.URL
 
 class UpdateManager : BukkitRunnable() {
+    companion object{
+        private val UPDATE_PERM = "mps.update"
+    }
+
     override fun run() {
         val newVersion = checkUpdate(getCurrentVersion())
         val currentVersion = getCurrentVersion()
         MovecraftPlotsquared.instance.logger.info(I18n.getInternationalisedString("Update - Checking for updates"))
-
+        Updater(currentVersion, newVersion).runTaskLater(MovecraftPlotsquared.instance, 1800)
     }
 
     fun getCurrentVersion() : Double {
@@ -43,6 +50,14 @@ class UpdateManager : BukkitRunnable() {
             return currentVersion
         }
     }
+
+    fun notifyPlayer(player : Player){
+        if (!player.hasPermission(UPDATE_PERM)){
+            return
+        }
+        player.sendMessage(Messages.MPS_PREFIX + I18n.getInternationalisedString("Update - New version"))
+        player.sendMessage(Messages.MPS_PREFIX + I18n.getInternationalisedString("Update - Download at") + " https://dev.bukkit.org/projects/movecraft-plotsquared/files")
+    }
     class Updater constructor(val currentVersion: Double, val newVersion : Double) : BukkitRunnable(){
         override fun run() {
             if (newVersion <= currentVersion){
@@ -50,6 +65,8 @@ class UpdateManager : BukkitRunnable() {
             } else {
                 MovecraftPlotsquared.instance.logger.warning(I18n.getInternationalisedString("Update - New version"))
                 MovecraftPlotsquared.instance.logger.warning(I18n.getInternationalisedString("Update - Download at") + "https://dev.bukkit.org/projects/movecraft-plotsquared/files")
+                Bukkit.broadcast(Messages.MPS_PREFIX + I18n.getInternationalisedString("Update - New version"), UPDATE_PERM)
+                Bukkit.broadcast(Messages.MPS_PREFIX + I18n.getInternationalisedString("Update - Download at") + "https://dev.bukkit.org/projects/movecraft-plotsquared/files", UPDATE_PERM)
             }
         }
 

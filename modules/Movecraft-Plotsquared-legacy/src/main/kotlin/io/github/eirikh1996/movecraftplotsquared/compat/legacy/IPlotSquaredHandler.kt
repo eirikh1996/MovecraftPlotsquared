@@ -72,7 +72,10 @@ class IPlotSquaredHandler constructor(val plugin: Plugin): PlotSquaredHandler {
             if (craft.type.cruiseOnPilot && !Settings.AllowCruiseOnPilotCraftsToExitPlots){
                 craft.sink()
             }
-            return false
+            if (!Settings.AllowMovementOutsidePlots){
+                return false
+            }
+            return true
         }
 
         if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){

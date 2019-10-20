@@ -21,7 +21,6 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
     val plotApi = PlotAPI()
     private val craftFlag = BooleanFlag("craftMovement")
     override fun registerPSFlags() {
-
         plotApi.addFlag(craftFlag)
     }
 
@@ -74,7 +73,10 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             if (craft.type.cruiseOnPilot && !Settings.AllowCruiseOnPilotCraftsToExitPlots){
                 craft.sink()
             }
-            return false
+            if (!Settings.AllowMovementOutsidePlots){
+                return false
+            }
+            return true
         }
         if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){
             if (plot.hasFlag(craftFlag)){
