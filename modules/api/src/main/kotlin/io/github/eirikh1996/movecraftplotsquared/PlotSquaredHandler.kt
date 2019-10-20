@@ -1,4 +1,4 @@
-package io.github.eirikh1996
+package io.github.eirikh1996.movecraftplotsquared
 
 import net.countercraft.movecraft.craft.Craft
 import net.countercraft.movecraft.utils.HitBox

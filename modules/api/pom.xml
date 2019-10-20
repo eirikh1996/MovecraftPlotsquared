@@ -13,7 +13,7 @@
     <artifactId>movecraft-plotsquared-api</artifactId>
     <packaging>jar</packaging>
 
-    <name>Movecraft-Plotsquared-API</name>
+    <name>Movecraft-PlotSquared-API</name>
     <version>API</version>
 
     <properties>

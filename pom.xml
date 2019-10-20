@@ -6,7 +6,7 @@
     <groupId>io.github.eirikh1996</groupId>
     <artifactId>movecraft-plotsquared-parent</artifactId>
     <version>Parent</version>
-    <name>Movecraft-Plotsquared-Parent</name>
+    <name>Movecraft-PlotSquared-Parent</name>
     <packaging>pom</packaging>
     <modules>
         <module>modules/api</module>

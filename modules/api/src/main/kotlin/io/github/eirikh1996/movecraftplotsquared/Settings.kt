@@ -1,4 +1,4 @@
-package io.github.eirikh1996
+package io.github.eirikh1996.movecraftplotsquared
 
 class Settings {
     companion object {

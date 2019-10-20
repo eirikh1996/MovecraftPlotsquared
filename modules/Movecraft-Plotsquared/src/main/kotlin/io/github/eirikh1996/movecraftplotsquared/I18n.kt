@@ -1,6 +1,5 @@
-package io.github.eirikh1996
+package io.github.eirikh1996.movecraftplotsquared
 
-import org.bukkit.entity.Player
 import java.io.*
 import java.util.*
 
@@ -19,7 +18,9 @@ class I18n {
             if (!locDir.exists()) {
                 locDir.mkdirs()
             }
-            val locFile = File(locDir, String.format("mpslang_%s.properties", Settings.Locale))
+            val locFile = File(locDir, String.format("mpslang_%s.properties",
+                Settings.Locale
+            ))
             var `is`: InputStream?
             try {
                 `is` = FileInputStream(locFile)

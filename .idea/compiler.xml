@@ -13,7 +13,7 @@
         <module name="Movecraft-Plotsquared-API" />
         <module name="MovecraftPlotsquared" />
       </profile>
-      <profile name="Annotation profile for Movecraft-Plotsquared-Parent" enabled="true">
+      <profile name="Annotation profile for Movecraft-PlotSquared-Parent" enabled="true">
         <sourceOutputDir name="../../target/generated-sources/annotations" />
         <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
