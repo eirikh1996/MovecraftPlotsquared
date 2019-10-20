@@ -12,8 +12,10 @@ import java.io.InputStreamReader
 import java.net.URL
 
 class UpdateManager : BukkitRunnable() {
+    private var running = false
     companion object{
         private val UPDATE_PERM = "mps.update"
+        val instance = UpdateManagerHolder.INSTANCE
     }
 
     override fun run() {
@@ -51,6 +53,13 @@ class UpdateManager : BukkitRunnable() {
         }
     }
 
+    fun start(){
+        if (running){
+            return
+        }
+        running = true
+        runTaskTimerAsynchronously(MovecraftPlotsquared.instance, 0, 1000000)
+    }
     fun notifyPlayer(player : Player){
         if (!player.hasPermission(UPDATE_PERM)){
             return
@@ -70,5 +79,11 @@ class UpdateManager : BukkitRunnable() {
             }
         }
 
+    }
+
+    private class UpdateManagerHolder{
+        companion object {
+             val INSTANCE = UpdateManager()
+        }
     }
 }

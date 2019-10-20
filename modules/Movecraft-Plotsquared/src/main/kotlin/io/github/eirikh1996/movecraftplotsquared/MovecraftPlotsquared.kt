@@ -5,6 +5,7 @@ import net.countercraft.movecraft.events.CraftRotateEvent
 import net.countercraft.movecraft.events.CraftTranslateEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -57,7 +58,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         Settings.AllowMovementOutsidePlots = config.getBoolean("AllowMovementOutsidePlots", false)
         Settings.AllowCruiseOnPilotCraftsToExitPlots = config.getBoolean("AllowCruiseOnPilotCraftsToExitPlots", false)
         server.pluginManager.registerEvents(this, this)
-
+        UpdateManager.instance.start()
     }
 
     override fun onLoad() {
@@ -82,6 +83,11 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         event.failMessage =
             I18n.getInternationalisedString("Rotation - Failed Not allowed to move")
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerJoin(event : PlayerJoinEvent){
+        UpdateManager.instance.notifyPlayer(event.player)
     }
 
 
