@@ -63,8 +63,10 @@ class UpdateManager : BukkitRunnable() {
     fun notifyPlayer(player : Player){
         if (!player.hasPermission(UPDATE_PERM)){
             return
+        } else if (checkUpdate(getCurrentVersion()) <= getCurrentVersion()){
+            return
         }
-        player.sendMessage(Messages.MPS_PREFIX + I18n.getInternationalisedString("Update - New version"))
+        player.sendMessage(Messages.MPS_PREFIX + String.format(I18n.getInternationalisedString("Update - New version"), checkUpdate(getCurrentVersion()), getCurrentVersion()))
         player.sendMessage(Messages.MPS_PREFIX + I18n.getInternationalisedString("Update - Download at") + " https://dev.bukkit.org/projects/movecraft-plotsquared/files")
     }
     class Updater constructor(val currentVersion: Double, val newVersion : Double) : BukkitRunnable(){

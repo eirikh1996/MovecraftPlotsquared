@@ -1,8 +1,11 @@
 package io.github.eirikh1996.movecraftplotsquared
 
 import net.countercraft.movecraft.Movecraft
+import net.countercraft.movecraft.events.CraftDetectEvent
 import net.countercraft.movecraft.events.CraftRotateEvent
+import net.countercraft.movecraft.events.CraftSinkEvent
 import net.countercraft.movecraft.events.CraftTranslateEvent
+import net.countercraft.movecraft.utils.HitBox
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -21,8 +24,17 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         val version = packageName.substring(packageName.lastIndexOf(".") + 1)
         val versionNumber = Integer.parseInt(version.split("_")[1])
         val compat : String
+        var usePS5 : Boolean
+        try {
+            Class.forName("com.plotsquared.bukkit.BukkitMain")
+            usePS5 = true
+        } catch (e : Exception) {
+            usePS5 = false;
+        }
         if (versionNumber <= 12){
             compat = "legacy";
+        } else if (usePS5){
+            compat = "ps5"
         } else {
             compat = "v1_13"
         }
@@ -67,7 +79,17 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
 
     @EventHandler
     fun onCraftTranslate(event : CraftTranslateEvent){
-        if (plotSquaredHandler.allowedToMove(event.craft, event.oldHitBox, event.newHitBox)){
+        val oldHitBox : HitBox
+        val newHitBox : HitBox
+        try {
+            val getOldHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getOldHitBox")
+            val getNewHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getNewHitBox")
+            oldHitBox = getOldHitBox.invoke(event) as HitBox
+            newHitBox = getNewHitBox.invoke(event) as HitBox
+        } catch (e : Exception) {
+            return
+        }
+        if (plotSquaredHandler.allowedToMove(event.craft, oldHitBox, newHitBox)){
             return
         }
         event.failMessage =
@@ -77,11 +99,40 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
 
     @EventHandler
     fun onCraftRotate(event: CraftRotateEvent){
-        if (plotSquaredHandler.allowedToMove(event.craft, event.oldHitBox, event.newHitBox)){
+        val oldHitBox : HitBox
+        val newHitBox : HitBox
+        try {
+            val getOldHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getOldHitBox")
+            val getNewHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getNewHitBox")
+            oldHitBox = getOldHitBox.invoke(event) as HitBox
+            newHitBox = getNewHitBox.invoke(event) as HitBox
+        } catch (e : Exception) {
+            return
+        }
+        if (plotSquaredHandler.allowedToRotate(event.craft, oldHitBox, newHitBox)){
             return
         }
         event.failMessage =
             I18n.getInternationalisedString("Rotation - Failed Not allowed to move")
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onCraftDetect(event : CraftDetectEvent) {
+        if (plotSquaredHandler.allowedToPilot(event.craft)) {
+            return
+        }
+        event.failMessage =
+            I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot")
+        event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onCraftSink(event : CraftSinkEvent) {
+        if (plotSquaredHandler.allowedToSink(event.craft)) {
+            return
+        }
+        event.craft.notificationPlayer!!.sendMessage(I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot"))
         event.isCancelled = true
     }
 

@@ -4,7 +4,12 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared-1_13+" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared-1_13+/src/main/kotlin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared-legacy" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared-legacy/src/main/kotlin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared/src/main/kotlin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/Movecraft-Plotsquared/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/api/src/main/kotlin" charset="UTF-8" />
   </component>
 </project>
