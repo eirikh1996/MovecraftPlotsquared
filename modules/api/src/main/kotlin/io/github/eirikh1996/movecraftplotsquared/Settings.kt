@@ -1,10 +1,8 @@
 package io.github.eirikh1996.movecraftplotsquared
 
-class Settings {
-    companion object {
-        var Locale : String = "en"
-        var AllowMovementOutsidePlots : Boolean = false
-        var AllowCruiseOnPilotCraftsToExitPlots : Boolean = false
-
-    }
+object Settings {
+        var DenySinkOnNoPvP = false
+        var Locale = "en"
+        var AllowMovementOutsidePlots = false
+        var AllowCruiseOnPilotCraftsToExitPlots = false
 }

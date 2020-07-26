@@ -4,6 +4,7 @@ import com.github.intellectualsites.plotsquared.api.PlotAPI
 import com.github.intellectualsites.plotsquared.plot.IPlotMain
 import com.github.intellectualsites.plotsquared.plot.`object`.Location
 import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag
+import com.github.intellectualsites.plotsquared.plot.flag.Flags
 import io.github.eirikh1996.movecraftplotsquared.PlotSquaredHandler
 import io.github.eirikh1996.movecraftplotsquared.Settings
 import net.countercraft.movecraft.MovecraftLocation
@@ -82,7 +83,11 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         if (!worlds.containsKey(craft.w.name)){
             return true
         }
-        if (craft.notificationPlayer != null && craft.notificationPlayer!!.hasPermission("mps.move.bypassrestrictions")){
+        val notifyP = craft.notificationPlayer
+        if (notifyP == null) {
+            return true
+        }
+        if (notifyP.hasPermission("mps.move.bypassrestrictions")){
             return true
         }
         if (plot == null){
@@ -94,7 +99,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             }
             return true
         }
-        if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){
+        if (!plot.owners.contains(notifyP.uniqueId) && !plot.members.contains(notifyP.uniqueId) && !plot.trusted.contains(notifyP.uniqueId)){
             if (plot.hasFlag(craftMoveFlag)){
                 return plot.getFlag(craftMoveFlag, false)
             }
@@ -137,7 +142,11 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         if (!worlds.containsKey(craft.w.name)){
             return true
         }
-        if (craft.notificationPlayer != null && craft.notificationPlayer!!.hasPermission("mps.rotate.bypassrestrictions")){
+        val notifyP = craft.notificationPlayer
+        if (notifyP == null) {
+            return true
+        }
+        if (notifyP.hasPermission("mps.rotate.bypassrestrictions")){
             return true
         }
         if (plot == null){
@@ -149,9 +158,9 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             }
             return true
         }
-        if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){
+        if (!plot.owners.contains(notifyP.uniqueId) && !plot.members.contains(notifyP.uniqueId) && !plot.trusted.contains(notifyP.uniqueId)){
             if (plot.hasFlag(craftRotateFlag)){
-                return plot.getFlag(craftMoveFlag, false)
+                return plot.getFlag(craftRotateFlag, false)
             }
             return false
         }
@@ -177,7 +186,11 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         if (!worlds.containsKey(craft.w.name)){
             return true
         }
-        if (craft.notificationPlayer != null && craft.notificationPlayer!!.hasPermission("mps.pilot.bypassrestrictions")){
+        val notifyP = craft.notificationPlayer
+        if (notifyP == null) {
+            return true
+        }
+        if (notifyP.hasPermission("mps.pilot.bypassrestrictions")){
             return true
         }
         if (plot == null){
@@ -189,7 +202,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             }
             return true
         }
-        if (!plot.owners.contains(craft.notificationPlayer!!.uniqueId) && !plot.members.contains(craft.notificationPlayer!!.uniqueId)){
+        if (!plot.owners.contains(notifyP.uniqueId) && !plot.members.contains(notifyP.uniqueId) && !plot.trusted.contains(notifyP.uniqueId)){
             if (plot.hasFlag(craftPilotFlag)){
                 return plot.getFlag(craftPilotFlag, false)
             }
@@ -214,7 +227,11 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         if (!worlds.containsKey(craft.w.name)){
             return true
         }
-        if (craft.notificationPlayer != null && craft.notificationPlayer!!.hasPermission("mps.sink.bypassrestrictions")){
+        val notifyP = craft.notificationPlayer
+        if (notifyP == null) {
+            return true
+        }
+        if (notifyP.hasPermission("mps.sink.bypassrestrictions")){
             return true
         }
         if (plot == null){
@@ -226,8 +243,10 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         if (plot.hasFlag(craftSinkFlag)){
             return plot.getFlag(craftSinkFlag, false)
         }
-
-        return true
+        if (!Settings.DenySinkOnNoPvP) {
+            return true
+        }
+        return plot.getFlag(Flags.PVP, true)
     }
 
     companion object {

@@ -1,3 +1,4 @@
 Locale: en
 AllowMovementOutsidePlots: false
 AllowCruiseOnPilotCraftsToExitPlots: false
+DenySinkOnNoPvP: false

@@ -69,6 +69,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
 
         Settings.AllowMovementOutsidePlots = config.getBoolean("AllowMovementOutsidePlots", false)
         Settings.AllowCruiseOnPilotCraftsToExitPlots = config.getBoolean("AllowCruiseOnPilotCraftsToExitPlots", false)
+        Settings.DenySinkOnNoPvP = config.getBoolean("DenySinkOnNoPvP", false)
         server.pluginManager.registerEvents(this, this)
         UpdateManager.instance.start()
     }
@@ -79,16 +80,8 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
 
     @EventHandler
     fun onCraftTranslate(event : CraftTranslateEvent){
-        val oldHitBox : HitBox
-        val newHitBox : HitBox
-        try {
-            val getOldHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getOldHitBox")
-            val getNewHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getNewHitBox")
-            oldHitBox = getOldHitBox.invoke(event) as HitBox
-            newHitBox = getNewHitBox.invoke(event) as HitBox
-        } catch (e : Exception) {
-            return
-        }
+        val oldHitBox = event.oldHitBox
+        val newHitBox = event.newHitBox
         if (plotSquaredHandler.allowedToMove(event.craft, oldHitBox, newHitBox)){
             return
         }
@@ -99,21 +92,12 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
 
     @EventHandler
     fun onCraftRotate(event: CraftRotateEvent){
-        val oldHitBox : HitBox
-        val newHitBox : HitBox
-        try {
-            val getOldHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getOldHitBox")
-            val getNewHitBox = CraftRotateEvent::class.java.getDeclaredMethod("getNewHitBox")
-            oldHitBox = getOldHitBox.invoke(event) as HitBox
-            newHitBox = getNewHitBox.invoke(event) as HitBox
-        } catch (e : Exception) {
-            return
-        }
+        val oldHitBox = event.oldHitBox
+        val newHitBox = event.newHitBox
         if (plotSquaredHandler.allowedToRotate(event.craft, oldHitBox, newHitBox)){
             return
         }
-        event.failMessage =
-            I18n.getInternationalisedString("Rotation - Failed Not allowed to move")
+        event.failMessage = I18n.getInternationalisedString("Rotation - Failed Not allowed to move")
         event.isCancelled = true
     }
 
@@ -122,8 +106,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (plotSquaredHandler.allowedToPilot(event.craft)) {
             return
         }
-        event.failMessage =
-            I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot")
+        event.failMessage = I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot")
         event.isCancelled = true
     }
 
