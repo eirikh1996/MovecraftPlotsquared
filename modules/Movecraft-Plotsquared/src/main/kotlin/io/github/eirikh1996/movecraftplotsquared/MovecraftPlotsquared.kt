@@ -5,7 +5,7 @@ import net.countercraft.movecraft.events.CraftDetectEvent
 import net.countercraft.movecraft.events.CraftRotateEvent
 import net.countercraft.movecraft.events.CraftSinkEvent
 import net.countercraft.movecraft.events.CraftTranslateEvent
-import net.countercraft.movecraft.utils.HitBox
+import net.kyori.adventure.text.Component
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -17,7 +17,7 @@ import kotlin.reflect.full.isSubclassOf
 class MovecraftPlotsquared : JavaPlugin(), Listener {
 
 
-    lateinit var plotSquaredHandler: PlotSquaredHandler
+    private lateinit var plotSquaredHandler: PlotSquaredHandler
 
     override fun onEnable() {
         val packageName = server.javaClass.`package`.name
@@ -115,7 +115,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (plotSquaredHandler.allowedToSink(event.craft)) {
             return
         }
-        event.craft.notificationPlayer!!.sendMessage(I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot"))
+        event.craft.audience.sendMessage(Component.text(I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot")))
         event.isCancelled = true
     }
 
