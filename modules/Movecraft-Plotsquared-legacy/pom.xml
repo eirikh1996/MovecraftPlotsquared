@@ -33,7 +33,7 @@
             <artifactId>movecraft</artifactId>
             <version>7.0.0_pre_release_5</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../../libs/Movecraft.jar</systemPath>
+            <systemPath>${project.basedir}/../../libs/Movecraft-v7.jar</systemPath>
         </dependency>
 
     </dependencies>

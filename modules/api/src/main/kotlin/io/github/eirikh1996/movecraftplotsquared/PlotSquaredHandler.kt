@@ -1,14 +1,16 @@
 package io.github.eirikh1996.movecraftplotsquared
 
-import net.countercraft.movecraft.craft.Craft
-import net.countercraft.movecraft.utils.HitBox
-import org.bukkit.plugin.Plugin
+import net.countercraft.movecraft.MovecraftLocation
+import org.bukkit.World
+import org.bukkit.entity.Player
+
 
 interface PlotSquaredHandler {
-    fun allowedToMove(craft : Craft, oldHitBox: HitBox, newHitBox: HitBox) : Boolean;
-    fun allowedToRotate(craft : Craft, oldHitBox: HitBox, newHitBox: HitBox) : Boolean
-    fun allowedToPilot(craft: Craft) : Boolean
-    fun allowedToSink(craft: Craft) : Boolean
+    fun allowedToMove(pilot : Player, oldHitBox: Set<MovecraftLocation>, newHitBox: Set<MovecraftLocation>, centerOfCraft : MovecraftLocation, craftWorld: World) : Boolean;
+    fun allowedToRotate(pilot : Player, oldHitBox: Set<MovecraftLocation>, newHitBox: Set<MovecraftLocation>, centerOfCraft : MovecraftLocation, craftWorld: World) : Boolean
+    fun allowedToPilot(pilot : Player, hitBox: Set<MovecraftLocation>, centerOfCraft : MovecraftLocation, craftWorld: World) : Boolean
+    fun allowedToSink(pilot : Player, hitBox: Set<MovecraftLocation>, centerOfCraft : MovecraftLocation, craftWorld: World) : Boolean
+    fun insidePlot(hitBox : Set<MovecraftLocation>, craftWorld: World) : Boolean
     fun plotSquaredInstalled() : Boolean
     fun registerPSFlags()
 }

@@ -2,7 +2,6 @@ package io.github.eirikh1996.movecraftplotsquared
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.bukkit.permissions.Permission
 import org.bukkit.scheduler.BukkitRunnable
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject

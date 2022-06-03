@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <artifactId>Movecraft-Plotsquared-Parent</artifactId>
+        <artifactId>movecraft-plotsquared-parent</artifactId>
         <groupId>io.github.eirikh1996</groupId>
         <version>Parent</version>
         <relativePath>../../pom.xml</relativePath>
@@ -46,13 +46,12 @@
             <artifactId>movecraft</artifactId>
             <version>7.0.0_pre_release_5</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../../libs/Movecraft.jar</systemPath>
+            <systemPath>${project.basedir}/../../libs/Movecraft-v7.jar</systemPath>
         </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
 
         <plugins>
             <plugin>

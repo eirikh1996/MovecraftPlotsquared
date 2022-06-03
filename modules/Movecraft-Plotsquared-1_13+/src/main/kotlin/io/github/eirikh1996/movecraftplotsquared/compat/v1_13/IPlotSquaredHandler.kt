@@ -3,14 +3,14 @@ package io.github.eirikh1996.movecraftplotsquared.compat.v1_13
 import com.github.intellectualsites.plotsquared.api.PlotAPI
 import com.github.intellectualsites.plotsquared.plot.IPlotMain
 import com.github.intellectualsites.plotsquared.plot.`object`.Location
+import com.github.intellectualsites.plotsquared.plot.`object`.Plot
 import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag
 import com.github.intellectualsites.plotsquared.plot.flag.Flags
 import io.github.eirikh1996.movecraftplotsquared.PlotSquaredHandler
 import io.github.eirikh1996.movecraftplotsquared.Settings
 import net.countercraft.movecraft.MovecraftLocation
-import net.countercraft.movecraft.craft.Craft
-import net.countercraft.movecraft.utils.HitBox
 import org.bukkit.World
+import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.yaml.snakeyaml.Yaml
 import java.io.FileInputStream
@@ -49,20 +49,16 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         return isInstalled
     }
 
-    override fun allowedToMove(craft: Craft, oldHitBox: HitBox, newHitBox: HitBox): Boolean {
-        if (craft.sinking){
-            return true
-        }
-        val hitbox : HitBox
-        try {
-            val getHitBox = Craft::class.java.getDeclaredMethod("getHitBox")
-            hitbox = getHitBox.invoke(craft) as HitBox
-        } catch (e : Exception) {
-            return true
-        }
+    override fun allowedToMove(
+        pilot: Player,
+        oldHitBox: Set<MovecraftLocation>,
+        newHitBox: Set<MovecraftLocation>,
+        centerOfCraft: MovecraftLocation,
+        craftWorld: World
+    ): Boolean {
         var plot = movecraft2PSLocation(
-            craft.w,
-            hitbox.midPoint
+            craftWorld,
+            centerOfCraft
         ).plot
         for (ml in newHitBox){
             if (oldHitBox.contains(ml)){
@@ -70,7 +66,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             }
             val pLoc =
                 movecraft2PSLocation(
-                    craft.w,
+                    craftWorld,
                     ml
                 )
             if (pLoc.plot != null){
@@ -80,26 +76,16 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craft.w.name)){
+        if (!worlds.containsKey(craftWorld.name)){
             return true
         }
-        val notifyP = craft.notificationPlayer
-        if (notifyP == null) {
+        if (pilot.hasPermission("mps.move.bypassrestrictions")){
             return true
         }
-        if (notifyP.hasPermission("mps.move.bypassrestrictions")){
-            return true
+        if (plot == null && !Settings.AllowMovementOutsidePlots){
+            return false
         }
-        if (plot == null){
-            if (craft.type.cruiseOnPilot && !Settings.AllowCruiseOnPilotCraftsToExitPlots){
-                craft.sink()
-            }
-            if (!Settings.AllowMovementOutsidePlots){
-                return false
-            }
-            return true
-        }
-        if (!plot.owners.contains(notifyP.uniqueId) && !plot.members.contains(notifyP.uniqueId) && !plot.trusted.contains(notifyP.uniqueId)){
+        if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
             if (plot.hasFlag(craftMoveFlag)){
                 return plot.getFlag(craftMoveFlag, false)
             }
@@ -108,20 +94,16 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         return true
     }
 
-    override fun allowedToRotate(craft: Craft, oldHitBox: HitBox, newHitBox: HitBox): Boolean {
-        if (craft.sinking){
-            return true
-        }
-        val hitbox : HitBox
-        try {
-            val getHitBox = Craft::class.java.getDeclaredMethod("getHitBox")
-            hitbox = getHitBox.invoke(craft) as HitBox
-        } catch (e : Exception) {
-            return true
-        }
+    override fun allowedToRotate(
+        pilot: Player,
+        oldHitBox: Set<MovecraftLocation>,
+        newHitBox: Set<MovecraftLocation>,
+        centerOfCraft: MovecraftLocation,
+        craftWorld: World
+    ): Boolean {
         var plot = movecraft2PSLocation(
-            craft.w,
-            hitbox.midPoint
+            craftWorld,
+            centerOfCraft
         ).plot
         for (ml in newHitBox){
             if (oldHitBox.contains(ml)){
@@ -129,7 +111,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             }
             val pLoc =
                 movecraft2PSLocation(
-                    craft.w,
+                    craftWorld,
                     ml
                 )
             if (pLoc.plot != null){
@@ -139,26 +121,16 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craft.w.name)){
+        if (!worlds.containsKey(craftWorld.name)){
             return true
         }
-        val notifyP = craft.notificationPlayer
-        if (notifyP == null) {
+        if (pilot.hasPermission("mps.move.bypassrestrictions")){
             return true
         }
-        if (notifyP.hasPermission("mps.rotate.bypassrestrictions")){
-            return true
+        if (plot == null && !Settings.AllowMovementOutsidePlots){
+            return false
         }
-        if (plot == null){
-            if (craft.type.cruiseOnPilot && !Settings.AllowCruiseOnPilotCraftsToExitPlots){
-                craft.sink()
-            }
-            if (!Settings.AllowMovementOutsidePlots){
-                return false
-            }
-            return true
-        }
-        if (!plot.owners.contains(notifyP.uniqueId) && !plot.members.contains(notifyP.uniqueId) && !plot.trusted.contains(notifyP.uniqueId)){
+        if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
             if (plot.hasFlag(craftRotateFlag)){
                 return plot.getFlag(craftRotateFlag, false)
             }
@@ -167,42 +139,39 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         return true
     }
 
-    override fun allowedToPilot(craft: Craft): Boolean {
-        if (craft.sinking){
-            return true
-        }
-        val hitbox : HitBox
-        try {
-            val getHitBox = Craft::class.java.getDeclaredMethod("getHitBox")
-            hitbox = getHitBox.invoke(craft) as HitBox
-        } catch (e : Exception) {
-            return true
-        }
-        val plot = movecraft2PSLocation(
-            craft.w,
-            hitbox.midPoint
+    override fun allowedToPilot(
+        pilot: Player,
+        hitBox: Set<MovecraftLocation>,
+        centerOfCraft: MovecraftLocation,
+        craftWorld: World
+    ): Boolean {
+        var plot = movecraft2PSLocation(
+            craftWorld,
+            centerOfCraft
         ).plot
+        for (ml in hitBox){
+            val pLoc =
+                movecraft2PSLocation(
+                    craftWorld,
+                    ml
+                )
+            if (pLoc.plot != null){
+                continue
+            }
+            plot = null
+            break
+        }
 
-        if (!worlds.containsKey(craft.w.name)){
+        if (!worlds.containsKey(craftWorld.name)){
             return true
         }
-        val notifyP = craft.notificationPlayer
-        if (notifyP == null) {
+        if (pilot.hasPermission("mps.move.bypassrestrictions")){
             return true
         }
-        if (notifyP.hasPermission("mps.pilot.bypassrestrictions")){
-            return true
+        if (plot == null && !Settings.AllowMovementOutsidePlots){
+            return false
         }
-        if (plot == null){
-            if (craft.type.cruiseOnPilot && !Settings.AllowCruiseOnPilotCraftsToExitPlots){
-                craft.sink()
-            }
-            if (!Settings.AllowMovementOutsidePlots){
-                return false
-            }
-            return true
-        }
-        if (!plot.owners.contains(notifyP.uniqueId) && !plot.members.contains(notifyP.uniqueId) && !plot.trusted.contains(notifyP.uniqueId)){
+        if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
             if (plot.hasFlag(craftPilotFlag)){
                 return plot.getFlag(craftPilotFlag, false)
             }
@@ -211,42 +180,60 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
         return true
     }
 
-    override fun allowedToSink(craft: Craft): Boolean {
-        val hitbox : HitBox
-        try {
-            val getHitBox = Craft::class.java.getDeclaredMethod("getHitBox")
-            hitbox = getHitBox.invoke(craft) as HitBox
-        } catch (e : Exception) {
-            return true
-        }
-        val plot = movecraft2PSLocation(
-            craft.w,
-            hitbox.midPoint
+    override fun allowedToSink(
+        pilot: Player,
+        hitBox: Set<MovecraftLocation>,
+        centerOfCraft: MovecraftLocation,
+        craftWorld: World
+    ): Boolean {
+        var plot = movecraft2PSLocation(
+            craftWorld,
+            centerOfCraft
         ).plot
-
-        if (!worlds.containsKey(craft.w.name)){
-            return true
-        }
-        val notifyP = craft.notificationPlayer
-        if (notifyP == null) {
-            return true
-        }
-        if (notifyP.hasPermission("mps.sink.bypassrestrictions")){
-            return true
-        }
-        if (plot == null){
-            if (!Settings.AllowMovementOutsidePlots){
-                return false
+        for (ml in hitBox){
+            val pLoc =
+                movecraft2PSLocation(
+                    craftWorld,
+                    ml
+                )
+            if (pLoc.plot != null){
+                continue
             }
+            plot = null
+            break
+        }
+
+        if (!worlds.containsKey(craftWorld.name)){
             return true
         }
-        if (plot.hasFlag(craftSinkFlag)){
-            return plot.getFlag(craftSinkFlag, false)
-        }
-        if (!Settings.DenySinkOnNoPvP) {
+        if (pilot.hasPermission("mps.move.bypassrestrictions")){
             return true
+        }
+        if (plot == null && !Settings.AllowMovementOutsidePlots){
+            return false
+        }
+        if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
+            if (plot.hasFlag(craftSinkFlag)){
+                return plot.getFlag(craftSinkFlag, false)
+            }
+            return false
         }
         return plot.getFlag(Flags.PVP, true)
+    }
+
+    override fun insidePlot(hitBox: Set<MovecraftLocation>, craftWorld: World): Boolean {
+        var plot : Plot? = null
+        for (ml in hitBox) {
+            plot = movecraft2PSLocation(craftWorld, ml).plot
+            if (plot != null)
+                break
+        }
+        for (ml in hitBox) {
+            plot = movecraft2PSLocation(craftWorld, ml).plot
+            if (plot == null)
+                break
+        }
+        return plot != null
     }
 
     companion object {

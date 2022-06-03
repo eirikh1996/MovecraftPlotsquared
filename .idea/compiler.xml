@@ -6,14 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="MovecraftPlotSquared" />
-        <module name="api" />
         <module name="Movecraft-Plotsquared-legacy" />
         <module name="movecraft-plotsquared-legacy" />
-        <module name="Movecraft-Plotsquared-1_13+" />
-        <module name="Movecraft-Plotsquared-API" />
         <module name="movecraft-plotsquared-api" />
+        <module name="Movecraft-Plotsquared-Movecraft-8" />
         <module name="movecraft-plotsquared-1_13" />
+        <module name="api" />
+        <module name="Movecraft-Plotsquared-API" />
+        <module name="MovecraftPlotSquared" />
+        <module name="Movecraft-Plotsquared-1_13+" />
       </profile>
       <profile name="Annotation profile for Movecraft-PlotSquared-Parent" enabled="true">
         <sourceOutputDir name="../../target/generated-sources/annotations" />

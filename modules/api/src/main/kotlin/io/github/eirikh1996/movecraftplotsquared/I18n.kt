@@ -1,5 +1,6 @@
 package io.github.eirikh1996.movecraftplotsquared
 
+import org.bukkit.plugin.Plugin
 import java.io.*
 import java.util.*
 
@@ -12,9 +13,9 @@ class I18n {
             return ret ?: key
         }
 
-        @JvmStatic fun initialize(){
+        @JvmStatic fun initialize(plugin: Plugin){
             languageFile = Properties()
-            val locDir = File(MovecraftPlotsquared.instance.dataFolder, "localisation")
+            val locDir = File(plugin.dataFolder, "localisation")
             if (!locDir.exists()) {
                 locDir.mkdirs()
             }
@@ -31,7 +32,7 @@ class I18n {
 
             if (`is` == null) {
 
-                MovecraftPlotsquared.instance.getServer().shutdown()
+                plugin.server.shutdown()
             }
             try {
                 languageFile.load(`is`)

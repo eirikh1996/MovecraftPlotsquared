@@ -11,7 +11,7 @@
 
     <artifactId>movecraft-plotsquared</artifactId>
     <name>Movecraft-PlotSquared</name>
-    <version>3.1</version>
+    <version>4.0</version>
     <packaging>jar</packaging>
 
 
@@ -67,9 +67,15 @@
         <dependency>
             <groupId>net.countercraft</groupId>
             <artifactId>movecraft</artifactId>
-            <version>7.0.0_pre_release_5</version>
+            <version>7.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../../libs/Movecraft.jar</systemPath>
+            <systemPath>${project.basedir}/../../libs/Movecraft-v7.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eirikh1996</groupId>
+            <artifactId>movecraft-plotsquared-movecraft-8</artifactId>
+            <version>Movecraft-8</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>

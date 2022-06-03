@@ -1,11 +1,6 @@
 package io.github.eirikh1996.movecraftplotsquared
 
 import net.countercraft.movecraft.Movecraft
-import net.countercraft.movecraft.events.CraftDetectEvent
-import net.countercraft.movecraft.events.CraftRotateEvent
-import net.countercraft.movecraft.events.CraftSinkEvent
-import net.countercraft.movecraft.events.CraftTranslateEvent
-import net.kyori.adventure.text.Component
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -53,7 +48,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
                 saveResource("localisation/" + locFile, false)
             }
         }
-        I18n.initialize()
+        I18n.initialize(this)
         val tempMovecraftPlugin : Plugin = server.pluginManager.getPlugin("Movecraft")!!
         if (tempMovecraftPlugin is Movecraft && tempMovecraftPlugin.isEnabled){
             movecraftPlugin = tempMovecraftPlugin
@@ -61,15 +56,24 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         if (movecraftPlugin == null){
             logger.severe(I18n.getInternationalisedString("Startup - Movecraft Not Found or disabled"))
             server.pluginManager.disablePlugin(this)
+            return
         }
         if (!plotSquaredHandler.plotSquaredInstalled()){
             logger.severe(I18n.getInternationalisedString("Startup - PlotSquared Not Found or disabled"))
             server.pluginManager.disablePlugin(this)
+            return
         }
-
+        var movecraftHandler : MovecraftHandler
+        try {
+            Class.forName("net.countercraft.movecraft.craft.BaseCraft")
+            movecraftHandler = Movecraft8Handler(plotSquaredHandler)
+        } catch (e : ClassNotFoundException) {
+            movecraftHandler = Movecraft7Handler(plotSquaredHandler)
+        }
         Settings.AllowMovementOutsidePlots = config.getBoolean("AllowMovementOutsidePlots", false)
         Settings.AllowCruiseOnPilotCraftsToExitPlots = config.getBoolean("AllowCruiseOnPilotCraftsToExitPlots", false)
         Settings.DenySinkOnNoPvP = config.getBoolean("DenySinkOnNoPvP", false)
+        server.pluginManager.registerEvents(movecraftHandler, this)
         server.pluginManager.registerEvents(this, this)
         UpdateManager.instance.start()
     }
@@ -78,46 +82,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         instance = this
     }
 
-    @EventHandler
-    fun onCraftTranslate(event : CraftTranslateEvent){
-        val oldHitBox = event.oldHitBox
-        val newHitBox = event.newHitBox
-        if (plotSquaredHandler.allowedToMove(event.craft, oldHitBox, newHitBox)){
-            return
-        }
-        event.failMessage =
-            I18n.getInternationalisedString("Translation - Failed Not allowed to move")
-        event.isCancelled = true
-    }
 
-    @EventHandler
-    fun onCraftRotate(event: CraftRotateEvent){
-        val oldHitBox = event.oldHitBox
-        val newHitBox = event.newHitBox
-        if (plotSquaredHandler.allowedToRotate(event.craft, oldHitBox, newHitBox)){
-            return
-        }
-        event.failMessage = I18n.getInternationalisedString("Rotation - Failed Not allowed to move")
-        event.isCancelled = true
-    }
-
-    @EventHandler
-    fun onCraftDetect(event : CraftDetectEvent) {
-        if (plotSquaredHandler.allowedToPilot(event.craft)) {
-            return
-        }
-        event.failMessage = I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot")
-        event.isCancelled = true
-    }
-
-    @EventHandler
-    fun onCraftSink(event : CraftSinkEvent) {
-        if (plotSquaredHandler.allowedToSink(event.craft)) {
-            return
-        }
-        event.craft.audience.sendMessage(Component.text(I18n.getInternationalisedString("Rotation - Failed Not allowed to pilot")))
-        event.isCancelled = true
-    }
 
     @EventHandler
     fun onPlayerJoin(event : PlayerJoinEvent){
