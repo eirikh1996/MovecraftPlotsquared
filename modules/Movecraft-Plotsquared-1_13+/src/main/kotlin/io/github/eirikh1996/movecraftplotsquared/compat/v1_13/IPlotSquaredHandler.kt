@@ -6,11 +6,13 @@ import com.github.intellectualsites.plotsquared.plot.`object`.Location
 import com.github.intellectualsites.plotsquared.plot.`object`.Plot
 import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag
 import com.github.intellectualsites.plotsquared.plot.flag.Flags
+import com.github.intellectualsites.plotsquared.plot.generator.GeneratorWrapper
 import io.github.eirikh1996.movecraftplotsquared.PlotSquaredHandler
 import io.github.eirikh1996.movecraftplotsquared.Settings
 import net.countercraft.movecraft.MovecraftLocation
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.bukkit.generator.ChunkGenerator
 import org.bukkit.plugin.Plugin
 import org.yaml.snakeyaml.Yaml
 import java.io.FileInputStream
@@ -24,14 +26,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
     private val craftRotateFlag = BooleanFlag("craft-rotate")
     private val craftPilotFlag = BooleanFlag("craft-pilot")
     private val craftSinkFlag = BooleanFlag("craft-sink")
-    private val worlds : Map<String, Any>
-    init {
-        val psWorldsFile = plugin.server.pluginManager.getPlugin("PlotSquared")!!.dataFolder.absolutePath + "/config/worlds.yml"
-        val input = FileInputStream(psWorldsFile)
-        val yaml = Yaml()
-        val data = yaml.load(input) as Map<String, Any>
-        worlds  = data.get("worlds") as Map<String, Any>
-    }
+
     override fun registerPSFlags() {
         plotApi.addFlag(craftMoveFlag)
         plotApi.addFlag(craftRotateFlag)
@@ -76,7 +71,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is GeneratorWrapper<*>) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -121,7 +116,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is GeneratorWrapper<*>) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -162,7 +157,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is GeneratorWrapper<*>) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -203,7 +198,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is GeneratorWrapper<*>) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){

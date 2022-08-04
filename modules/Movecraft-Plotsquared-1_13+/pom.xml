@@ -13,6 +13,12 @@
     <artifactId>movecraft-plotsquared-1_13</artifactId>
     <name>Movecraft-PlotSquared-1_13</name>
     <version>1_13</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.version>1.7.0-RC2</kotlin.version>
+        <kotlin.code.style>official</kotlin.code.style>
+        <junit.version>4.13.1</junit.version>
+    </properties>
     <repositories>
         <repository>
             <id>IntellectualSites</id>

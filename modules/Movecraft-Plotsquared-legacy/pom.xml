@@ -8,6 +8,12 @@
         <version>Parent</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.version>1.7.0-RC2</kotlin.version>
+        <kotlin.code.style>official</kotlin.code.style>
+        <junit.version>4.13.1</junit.version>
+    </properties>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>movecraft-plotsquared-legacy</artifactId>

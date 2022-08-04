@@ -7,7 +7,9 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.primaryConstructor
 
 class MovecraftPlotsquared : JavaPlugin(), Listener {
 
@@ -20,22 +22,31 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         val versionNumber = Integer.parseInt(version.split("_")[1])
         val compat : String
         var usePS5 : Boolean
+        var usePS6 : Boolean
         try {
             Class.forName("com.plotsquared.bukkit.BukkitMain")
             usePS5 = true
         } catch (e : Exception) {
             usePS5 = false;
         }
+        try {
+            Class.forName("com.plotsquared.bukkit.BukkitPlatform")
+            usePS6 = true
+        } catch (e : Exception) {
+            usePS6 = false
+        }
         if (versionNumber <= 12){
             compat = "legacy";
         } else if (usePS5){
             compat = "ps5"
+        } else if (usePS6) {
+            compat = "ps6"
         } else {
             compat = "v1_13"
         }
         val psHandler = Class.forName("io.github.eirikh1996.movecraftplotsquared.compat." + compat + ".IPlotSquaredHandler").kotlin
         if (psHandler.isSubclassOf(PlotSquaredHandler::class)){
-            plotSquaredHandler = psHandler.constructors.first().call(this) as PlotSquaredHandler
+            plotSquaredHandler = psHandler.primaryConstructor?.call(this) as PlotSquaredHandler
         }
 
         saveDefaultConfig()
@@ -63,6 +74,8 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
             server.pluginManager.disablePlugin(this)
             return
         }
+
+
         var movecraftHandler : MovecraftHandler
         try {
             Class.forName("net.countercraft.movecraft.craft.BaseCraft")
@@ -70,6 +83,7 @@ class MovecraftPlotsquared : JavaPlugin(), Listener {
         } catch (e : ClassNotFoundException) {
             movecraftHandler = Movecraft7Handler(plotSquaredHandler)
         }
+        logger.info(I18n.getInternationalisedString("Startup - Detected Movecraft Version").replace("%MOVECRAFT_VERSION%", movecraftPlugin!!.description.version))
         Settings.AllowMovementOutsidePlots = config.getBoolean("AllowMovementOutsidePlots", false)
         Settings.AllowCruiseOnPilotCraftsToExitPlots = config.getBoolean("AllowCruiseOnPilotCraftsToExitPlots", false)
         Settings.DenySinkOnNoPvP = config.getBoolean("DenySinkOnNoPvP", false)

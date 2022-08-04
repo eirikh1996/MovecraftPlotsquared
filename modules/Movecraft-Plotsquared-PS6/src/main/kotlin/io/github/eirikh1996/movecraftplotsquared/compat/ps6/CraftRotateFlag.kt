@@ -1,8 +1,6 @@
-package io.github.eirikh1996.movecraftplotsquared.compat.ps5
+package io.github.eirikh1996.movecraftplotsquared.compat.ps6
 
-import com.plotsquared.core.configuration.StaticCaption
-
-class CraftRotateFlag constructor(override val allowed : Boolean) : CraftFlag(allowed, StaticCaption("Allows a craft to rotate inside a plot")) {
+class CraftRotateFlag constructor(override val allowed : Boolean) : CraftFlag(allowed, "Allows a craft to rotate inside a plot") {
 
 
     override fun flagOf(p0: Boolean): CraftFlag {

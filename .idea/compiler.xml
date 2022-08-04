@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Movecraft-Plotsquared-legacy" />
+        <module name="Movecraft-Plotsquared-PS6" />
         <module name="movecraft-plotsquared-legacy" />
         <module name="movecraft-plotsquared-api" />
         <module name="Movecraft-Plotsquared-Movecraft-8" />

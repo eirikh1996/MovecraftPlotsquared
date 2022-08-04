@@ -1,8 +1,6 @@
-package io.github.eirikh1996.movecraftplotsquared.compat.ps5
+package io.github.eirikh1996.movecraftplotsquared.compat.ps6
 
-import com.plotsquared.core.configuration.StaticCaption
-
-class CraftSinkFlag constructor(override val allowed : Boolean) : CraftFlag(allowed, StaticCaption("Allows a craft to be piloted inside a plot")) {
+class CraftSinkFlag constructor(override val allowed : Boolean) : CraftFlag(allowed, "Allows a craft to be piloted inside a plot") {
 
 
     override fun flagOf(p0: Boolean): CraftFlag {

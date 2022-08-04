@@ -1,7 +1,7 @@
 package io.github.eirikh1996.movecraftplotsquared.compat.ps5
 
 import com.plotsquared.bukkit.BukkitMain
-import com.plotsquared.core.IPlotMain
+import com.plotsquared.bukkit.generator.BukkitPlotGenerator
 import com.plotsquared.core.api.PlotAPI
 import com.plotsquared.core.location.Location
 import com.plotsquared.core.plot.Plot
@@ -10,15 +10,13 @@ import com.plotsquared.core.plot.flag.implementations.PvpFlag
 import io.github.eirikh1996.movecraftplotsquared.PlotSquaredHandler
 import io.github.eirikh1996.movecraftplotsquared.Settings
 import net.countercraft.movecraft.MovecraftLocation
-import net.countercraft.movecraft.craft.Craft
-import net.countercraft.movecraft.util.hitboxes.HitBox
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.yaml.snakeyaml.Yaml
 import java.io.FileInputStream
 
-class IPlotSquaredHandler constructor(val plugin: Plugin):
+class IPlotSquaredHandler constructor(private val plugin: Plugin):
     PlotSquaredHandler {
 
 
@@ -27,14 +25,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
     private val craftRotateFlag = CraftRotateFlag(false)
     private val craftPilotFlag = CraftPilotFlag(false)
     private val craftSinkFlag = CraftSinkFlag(false)
-    private val worlds : Map<String, Any>
-    init {
-        val psWorldsFile = plugin.server.pluginManager.getPlugin("PlotSquared")!!.dataFolder.absolutePath + "/config/worlds.yml"
-        val input = FileInputStream(psWorldsFile)
-        val yaml = Yaml()
-        val data = yaml.load(input) as Map<String, Any>
-        worlds  = data.get("worlds") as Map<String, Any>
-    }
+
     override fun registerPSFlags() {
         GlobalFlagContainer.getInstance().addFlag(craftMoveFlag)
         GlobalFlagContainer.getInstance().addFlag(craftRotateFlag)
@@ -80,7 +71,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -125,7 +116,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -177,7 +168,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -219,7 +210,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin):
             break
         }
 
-        if (!worlds.containsKey(craftWorld.name)){
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){

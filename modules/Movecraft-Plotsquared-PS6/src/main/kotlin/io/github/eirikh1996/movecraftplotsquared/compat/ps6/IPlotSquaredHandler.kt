@@ -1,43 +1,49 @@
-package io.github.eirikh1996.movecraftplotsquared.compat.legacy
+package io.github.eirikh1996.movecraftplotsquared.compat.ps6
 
-import com.intellectualcrafters.plot.IPlotMain
-import com.intellectualcrafters.plot.`object`.Location
-import com.intellectualcrafters.plot.`object`.Plot
-import com.intellectualcrafters.plot.api.PlotAPI
-import com.intellectualcrafters.plot.flag.BooleanFlag
-import com.intellectualcrafters.plot.flag.Flags.PVP
-import com.intellectualcrafters.plot.generator.GeneratorWrapper
+import com.plotsquared.bukkit.BukkitPlatform
+import com.plotsquared.bukkit.generator.BukkitPlotGenerator
+import com.plotsquared.core.PlotAPI
+import com.plotsquared.core.location.Location
+import com.plotsquared.core.plot.Plot
+import com.plotsquared.core.plot.flag.GlobalFlagContainer
+import com.plotsquared.core.plot.flag.implementations.PvpFlag
+import com.sk89q.worldedit.math.BlockVector3
 import io.github.eirikh1996.movecraftplotsquared.PlotSquaredHandler
 import io.github.eirikh1996.movecraftplotsquared.Settings
 import net.countercraft.movecraft.MovecraftLocation
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.plugin.Plugin
 import org.yaml.snakeyaml.Yaml
 import java.io.FileInputStream
 
-class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
+class IPlotSquaredHandler constructor(private val plugin: Plugin) : PlotSquaredHandler {
+
+
     val plotApi = PlotAPI()
+    private val craftMoveFlag = CraftMoveFlag(false)
+    private val craftRotateFlag = CraftRotateFlag(false)
+    private val craftPilotFlag = CraftPilotFlag(false)
+    private val craftSinkFlag = CraftSinkFlag(false)
 
-    private val craftMoveFlag = BooleanFlag("craft-move")
-    private val craftRotateFlag = BooleanFlag("craft-rotate")
-    private val craftPilotFlag = BooleanFlag("craft-pilot")
-    private val craftSinkFlag = BooleanFlag("craft-sink")
+    fun onWorldLoad(event : WorldLoadEvent) {
 
-    override fun registerPSFlags() {
-
-        plotApi.addFlag(craftMoveFlag)
-        plotApi.addFlag(craftRotateFlag)
-        plotApi.addFlag(craftPilotFlag)
-        plotApi.addFlag(craftSinkFlag)
     }
 
-    lateinit var plotSquaredPlugin : IPlotMain
+    override fun registerPSFlags() {
+        GlobalFlagContainer.getInstance().addFlag(craftMoveFlag)
+        GlobalFlagContainer.getInstance().addFlag(craftRotateFlag)
+        GlobalFlagContainer.getInstance().addFlag(craftPilotFlag)
+        GlobalFlagContainer.getInstance().addFlag(craftSinkFlag)
+    }
+
+    lateinit var plotSquaredPlugin : BukkitPlatform
     override fun plotSquaredInstalled(): Boolean {
         val ps = plugin.server.pluginManager.getPlugin("PlotSquared")
-        val isInstalled = ps is IPlotMain
+        val isInstalled = ps is BukkitPlatform && ps.isEnabled
         if (isInstalled){
-            plotSquaredPlugin = ps as IPlotMain
+            plotSquaredPlugin = ps as BukkitPlatform
         }
         return isInstalled
     }
@@ -49,6 +55,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
         centerOfCraft: MovecraftLocation,
         craftWorld: World
     ): Boolean {
+
         var plot = movecraft2PSLocation(
             craftWorld,
             centerOfCraft
@@ -69,7 +76,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
             break
         }
 
-        if (craftWorld.generator !is GeneratorWrapper<*>) {
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -78,50 +85,11 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
         if (plot == null && !Settings.AllowMovementOutsidePlots){
             return false
         }
-        if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
-            if (plot.hasFlag(craftMoveFlag)){
-                return plot.getFlag(craftMoveFlag, false)
-            }
-            return false
-        }
-        return true
-    }
-
-    override fun allowedToPilot(
-        pilot: Player,
-        hitBox: Set<MovecraftLocation>,
-        centerOfCraft: MovecraftLocation,
-        craftWorld: World
-    ): Boolean {
-        var plot = movecraft2PSLocation(
-            craftWorld,
-            centerOfCraft
-        ).plot
-        for (ml in hitBox){
-            val pLoc =
-                movecraft2PSLocation(
-                    craftWorld,
-                    ml
-                )
-            if (pLoc.plot != null){
-                continue
-            }
-            plot = null
-            break
-        }
-
-        if (craftWorld.generator !is GeneratorWrapper<*>) {
+        if (plot == null)
             return true
-        }
-        if (pilot.hasPermission("mps.move.bypassrestrictions")){
-            return true
-        }
-        if (plot == null && !Settings.AllowMovementOutsidePlots){
-            return false
-        }
         if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
-            if (plot.hasFlag(craftPilotFlag)){
-                return plot.getFlag(craftPilotFlag, false)
+            if (plot.flags.contains(craftMoveFlag)){
+                return plot.getFlag(craftMoveFlag)
             }
             return false
         }
@@ -155,7 +123,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
             break
         }
 
-        if (craftWorld.generator !is GeneratorWrapper<*>) {
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -164,21 +132,34 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
         if (plot == null && !Settings.AllowMovementOutsidePlots){
             return false
         }
+        if (plot == null)
+            return true
         if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
-            if (plot.hasFlag(craftRotateFlag)){
-                return plot.getFlag(craftRotateFlag, false)
+            if (plot.flags.contains(craftRotateFlag)){
+                return plot.getFlag(craftRotateFlag)
             }
             return false
         }
         return true
     }
 
-    override fun allowedToSink(
-        pilot: Player,
-        hitBox: Set<MovecraftLocation>,
-        centerOfCraft: MovecraftLocation,
-        craftWorld: World
-    ): Boolean {
+    override fun insidePlot(hitBox: Set<MovecraftLocation>, craftWorld: World): Boolean {
+        var plot : Plot? = null
+        for (ml in hitBox) {
+            plot = movecraft2PSLocation(craftWorld, ml).plot
+            if (plot != null)
+                break
+        }
+
+        for (ml in hitBox) {
+            plot = movecraft2PSLocation(craftWorld, ml).plot
+            if (plot == null)
+                break
+        }
+        return plot != null
+    }
+
+    override fun allowedToPilot(pilot: Player, hitBox: Set<MovecraftLocation>, centerOfCraft: MovecraftLocation, craftWorld: World): Boolean {
         var plot = movecraft2PSLocation(
             craftWorld,
             centerOfCraft
@@ -196,7 +177,7 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
             break
         }
 
-        if (craftWorld.generator !is GeneratorWrapper<*>) {
+        if (craftWorld.generator !is BukkitPlotGenerator) {
             return true
         }
         if (pilot.hasPermission("mps.move.bypassrestrictions")){
@@ -205,34 +186,56 @@ class IPlotSquaredHandler constructor(val plugin: Plugin) : PlotSquaredHandler {
         if (plot == null && !Settings.AllowMovementOutsidePlots){
             return false
         }
+        if (plot == null)
+            return true
         if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
-            if (plot.hasFlag(craftSinkFlag)){
-                return plot.getFlag(craftSinkFlag, false)
+            if (plot.flags.contains(craftPilotFlag)){
+                return plot.getFlag(craftPilotFlag)
             }
             return false
         }
-        return plot.getFlag(PVP, true)
+        return true
     }
 
-    override fun insidePlot(hitBox: Set<MovecraftLocation>, craftWorld: World): Boolean {
-        var plot : Plot? = null
-        for (ml in hitBox) {
-            plot = movecraft2PSLocation(craftWorld, ml).plot
-            if (plot != null)
-                break
+    override fun allowedToSink(
+        pilot: Player,
+        hitBox: Set<MovecraftLocation>,
+        centerOfCraft: MovecraftLocation,
+        craftWorld: World
+    ): Boolean {
+        var plot = movecraft2PSLocation(craftWorld, centerOfCraft).plot
+        for (ml in hitBox){
+
+            val pLoc = movecraft2PSLocation(craftWorld, ml)
+            if (pLoc.plot != null){
+                continue
+            }
+            plot = null
+            break
         }
-        for (ml in hitBox) {
-            plot = movecraft2PSLocation(craftWorld, ml).plot
-            if (plot == null)
-                break
+        if (craftWorld.generator !is BukkitPlotGenerator) {
+            return true
         }
-        return plot != null
+        if (pilot.hasPermission("mps.move.bypassrestrictions")){
+            return true
+        }
+        if (plot == null && !Settings.AllowMovementOutsidePlots){
+            return false
+        }
+        if (plot == null)
+            return true
+        if (!plot.owners.contains(pilot.uniqueId) && !plot.members.contains(pilot.uniqueId) && !plot.trusted.contains(pilot.uniqueId)){
+            if (plot.flags.contains(craftMoveFlag)){
+                return plot.getFlag(craftMoveFlag)
+            }
+            return false
+        }
+        return plot.getFlag(PvpFlag::class.java)
     }
 
     companion object {
-        @JvmStatic fun movecraft2PSLocation(world : World, movecraftLocation: MovecraftLocation) : Location{
-            return Location(world.name, movecraftLocation.x, movecraftLocation.y, movecraftLocation.z)
+        @JvmStatic fun movecraft2PSLocation(world : World, movecraftLocation: MovecraftLocation) : Location {
+            return Location.at(world.name, movecraftLocation.x, movecraftLocation.y, movecraftLocation.z)
         }
     }
 }
-
